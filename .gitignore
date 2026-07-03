@@ -10,7 +10,6 @@ venv/
 *.pth
 *.ckpt
 checkpoints/
-runs/
 
 # Daten (CFD-Fälle, Graph-Datasets, VTK — liegen im S3-Bucket)
 *.vtk
