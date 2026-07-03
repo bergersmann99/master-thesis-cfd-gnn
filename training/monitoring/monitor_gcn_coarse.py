@@ -106,13 +106,9 @@ def finalize_results(doc_path, log_text):
     for old, new in replacements.items():
         content = content.replace(old, new)
 
-    if time_m:
-        r2_val = r2_total if gesamt_m else "—"
-        rl2_val = rl2_total if gesamt_m else "—"
-        old_r2 = "| Test R² (gesamt) | — |"
-        old_rl2 = "| Test rL2 (gesamt) | — |"
-        content = content.replace(old_r2,  f"| Test R² (gesamt) | **{r2_val}** |")
-        content = content.replace(old_rl2, f"| Test rL2 (gesamt) | **{rl2_val}** |")
+    if test_block_m and gesamt_m:
+        content = content.replace("| Test R² (gesamt) | — |",  f"| Test R² (gesamt) | **{r2_total}** |")
+        content = content.replace("| Test rL2 (gesamt) | — |", f"| Test rL2 (gesamt) | **{rl2_total}** |")
 
     doc_path.write_text(content)
     print("[Monitor GCN Coarse] Ergebnisse eingetragen.")
