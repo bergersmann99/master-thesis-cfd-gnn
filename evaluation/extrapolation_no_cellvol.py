@@ -42,7 +42,6 @@ Siehe QUELLEN_extrapolation_no_cellvol.md.
 
 import os
 import sys
-import json
 import datetime
 
 import numpy as np
@@ -92,6 +91,7 @@ def slice_cellvol(g_14):
 # ----------------------------------------------------------------------
 
 def load_model_and_stats(checkpoint_path, device):
+    """Laedt das 13-F-GATv2-Modell samt Normalisierungsstatistiken aus dem Checkpoint."""
     if not os.path.exists(checkpoint_path):
         raise FileNotFoundError(checkpoint_path)
     ck = torch.load(checkpoint_path, map_location=device,
@@ -155,6 +155,7 @@ def compute_field_metrics(pred, true):
 # ----------------------------------------------------------------------
 
 def gate_sim014():
+    """Validierungs-Gate: prueft die bit-exakte Aequivalenz des Slicings auf sim_014."""
     g14 = None
     g13 = None
     for p in [
@@ -197,6 +198,7 @@ def gate_sim014():
 # ----------------------------------------------------------------------
 
 def main():
+    """Fuehrt Gate, Inferenz und Metrikberechnung fuer beide Extrapolationsfaelle aus."""
     print("=" * 72)
     print("Validierungs-Gate (sim_014)")
     print("=" * 72)
@@ -284,7 +286,7 @@ def main():
         ref = REF_14F[case]
         d_r2 = metrics["gesamt"]["R2"] - ref["R2_gesamt"]
         d_rl2 = metrics["gesamt"]["rL2"] - ref["rL2_gesamt"]
-        print(f"\n  Vergleich gegen 14-F GATv2 (Referenz):")
+        print("\n  Vergleich gegen 14-F GATv2 (Referenz):")
         print(f"    R²_gesamt    no_cellvol={metrics['gesamt']['R2']:.4f}  "
               f"14-F={ref['R2_gesamt']:.4f}  Δ={d_r2:+.4f}")
         print(f"    rL2_gesamt   no_cellvol={metrics['gesamt']['rL2']:.4f}  "
@@ -307,7 +309,7 @@ def main():
 
     # YAML schreiben
     os.makedirs(os.path.dirname(OUT_YAML), exist_ok=True)
-    with open(OUT_YAML, "w") as f:
+    with open(OUT_YAML, "w", encoding="utf-8") as f:
         f.write("# Extrapolation no_cellvol (13-F-GATv2 Medium)\n")
         f.write("# Slicing-Ableitung der 14-F-Extrap-Graphen (Spalte "
                 "cell_volume entfernt).\n")

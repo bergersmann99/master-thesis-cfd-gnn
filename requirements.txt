@@ -1,0 +1,15 @@
+# Python >= 3.10 (PEP-604-Type-Hints in inference/interpolate_to_full_mesh.py)
+# Versionen bewusst nicht gepinnt — die Referenzumgebungen (EC2 / Laptop-venv) sind maßgeblich.
+numpy
+scipy
+pyyaml
+torch
+torch-geometric
+pyvista
+matplotlib
+numpy-stl        # simulation/createGeometry.py (import stl)
+boto3            # evaluation/batch_complete.py, batch_extrapolation.py, interpolate_sim013_gcn_rerun.py
+
+# Nicht-Python-Abhängigkeiten:
+#   OpenFOAM (blockMesh, snappyHexMesh, simpleFoam, potentialFoam, foamToVTK, ...) + MPI (mpirun)
+#   AWS CLI v2 (aws s3 cp/sync/ls) — von simulation/, training/ und benchmarks/ aufgerufen

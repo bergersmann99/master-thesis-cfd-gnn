@@ -21,6 +21,7 @@ FOCUS_VAL = ['sim_012']
 
 
 def aggregate_r2_no_ke(eval_dir):
+    """Liest eval_metrics.json und liefert (R² alle Felder, R² ohne k/eps)."""
     p = os.path.join(eval_dir, 'eval_metrics.json')
     if not os.path.isfile(p):
         return None, None
@@ -41,6 +42,7 @@ def per_sim_r2(eval_dir, sim):
     pm, gm = pv.read(pred_p), pv.read(gt_p)
 
     def stack(m, fields4):
+        """Stapelt die Zielfelder (bei fields4 nur Ux, Uy, Uz, p) zu einem Array."""
         U = np.asarray(m['U'], dtype=np.float64)
         cols = [U[:,0], U[:,1], U[:,2], np.asarray(m['p'], dtype=np.float64)]
         if not fields4:
@@ -49,6 +51,7 @@ def per_sim_r2(eval_dir, sim):
         return np.column_stack(cols)
 
     def per_field_r2(pred, true):
+        """R² je Feld, gemittelt."""
         # R² je Feld, dann Mittel
         scores = []
         for i in range(pred.shape[1]):
@@ -64,6 +67,7 @@ def per_sim_r2(eval_dir, sim):
 
 
 def main():
+    """Gibt beide R²-Tabellen (aggregiert und pro Sim) auf der Konsole aus."""
     print('\n' + '='*78)
     print('  AGGREGIERT pro Netzwerk (Mittelwert aller Sims im Eval)')
     print('='*78)
@@ -84,7 +88,7 @@ def main():
             results.append((split, net, r2_all, r2_4))
 
     print('\n' + '='*78)
-    print(f'  PRO SIM (Test: sim_001/013/014, Val: sim_012)')
+    print('  PRO SIM (Test: sim_001/013/014, Val: sim_012)')
     print('='*78)
     print(f"{'Sim':<10} {'Netzwerk':<16} {'Split':<6} "
           f"{'R² (alle)':>10}  {'R² ohne k,eps':>14}")

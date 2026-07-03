@@ -33,6 +33,8 @@ FIGSIZE = (11.0, 6.0)
 DPI = 300
 
 # Lauf -> (Anzeigename, Farbe, Marker). Reihenfolge = Legendenreihenfolge.
+# Hinweis: Die Marker-Eintraege werden aktuell nicht genutzt (Kurven werden nur
+# ueber Farbe und Linienstil unterschieden); Struktur bewusst so belassen.
 RUN_STYLE = OrderedDict([
     ("gcn_coarse",   ("GCN Coarse",   "#93C5FD", "o")),
     ("gcn_medium",   ("GCN Medium",   "#2563EB", "o")),
@@ -44,6 +46,7 @@ RUN_STYLE = OrderedDict([
 
 
 def setup_style():
+    """Setzt den Matplotlib-Stil fuer den kombinierten Plot."""
     plt.rcParams.update({
         "font.family": "serif",
         "font.size": 11,
@@ -81,6 +84,7 @@ def load_curves(path):
 
 
 def main():
+    """Zeichnet alle sechs Trainingsverlaeufe in ein gemeinsames Diagramm."""
     setup_style()
     data = load_curves(CSV_PATH)
 

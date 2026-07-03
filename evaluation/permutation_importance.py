@@ -16,7 +16,6 @@ Verwendung:
 """
 
 import os
-import sys
 import json
 import argparse
 from datetime import datetime
@@ -399,6 +398,7 @@ def plot_importance(baseline, results, arch_name, output_dir):
 # ==================================================================
 
 def main():
+    """CLI-Einstieg: laedt Modell und Graphen, berechnet Importance, speichert JSON und Plots."""
     parser = argparse.ArgumentParser(
         description="Permutation Importance fuer GNN-Surrogat")
     parser.add_argument("--checkpoint", type=str, required=True)
@@ -414,7 +414,7 @@ def main():
                           else "cpu")
 
     print(f"\n{'=' * 60}")
-    print(f"  PERMUTATION IMPORTANCE")
+    print("  PERMUTATION IMPORTANCE")
     print(f"{'=' * 60}")
     print(f"  Geraet:     {device}")
     if torch.cuda.is_available():
@@ -459,7 +459,7 @@ def main():
 
     json_path = os.path.join(args.output_dir,
                              "permutation_importance.json")
-    with open(json_path, "w") as f:
+    with open(json_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2)
     print(f"\n  Ergebnisse: {json_path}")
 

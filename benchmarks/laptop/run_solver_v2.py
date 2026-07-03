@@ -25,6 +25,7 @@ BASE = "/home/tim-bergermann/laptop_timing"
 
 
 def write_controlDict(case_dir, start_from, end_time, write_interval, purge):
+    """Schreibt system/controlDict fuer den simpleFoam-Lauf."""
     RS._write_file(case_dir, "system/controlDict", f"""\
 FoamFile
 {{
@@ -81,6 +82,7 @@ functions
 
 
 def run(level, config_path, num_cores=4):
+    """Fuehrt die Solver-Schritte 7-11 fuer eine Stufe aus und misst die Zeiten je Schritt."""
     print(f"\n{'='*70}\nSOLVER {level.upper()} — config: {config_path}\n{'='*70}", flush=True)
 
     with open(config_path) as f:
@@ -197,6 +199,7 @@ def run(level, config_path, num_cores=4):
 
 
 def main():
+    """Parst CLI-Argumente, startet den Solver-Lauf und schreibt das Ergebnis-YAML."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--level", required=True, choices=["coarse", "medium", "fine"])
     ap.add_argument("--cores", type=int, default=4)

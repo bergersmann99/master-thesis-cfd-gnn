@@ -450,6 +450,7 @@ def plot_epsilon(models, output_path):
 # ======================================================================
 
 def main():
+    """Laedt die Modelle und erzeugt die beiden aktiven Vergleichsabbildungen."""
     parser = argparse.ArgumentParser(
         description="Vergleichsplots fuer GNN-Modelle")
 

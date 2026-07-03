@@ -159,6 +159,7 @@ def write_markdown(results: dict, sim_id: str, md_path: str,
 
 
 def parse_args(argv=None) -> argparse.Namespace:
+    """Parse die Kommandozeilenargumente."""
     parser = argparse.ArgumentParser(
         description="Min/Max der Vorhersagen je Subsampling-Level (sparse VTU)."
     )
@@ -178,6 +179,7 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 
 def main(argv=None) -> int:
+    """Programmeinstieg; gibt den Exit-Code zurueck."""
     args = parse_args(argv)
 
     paths = {

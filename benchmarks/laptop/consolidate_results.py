@@ -3,8 +3,8 @@ Liest alle Timing-YAMLs und prediction_report.json-Dateien aus ~/laptop_timing/
 und schreibt eine konsolidierte run_log.yaml mit Speedup-Berechnung.
 """
 import os
+import re
 import json
-import glob
 import statistics
 
 import yaml
@@ -14,6 +14,7 @@ LOGS = os.path.join(BASE, "logs")
 
 
 def load_yaml(path):
+    """Liest eine YAML-Datei; None bei fehlender oder unlesbarer Datei."""
     if not os.path.exists(path):
         return None
     try:
@@ -24,6 +25,7 @@ def load_yaml(path):
 
 
 def load_inference_times(case_name, n_runs=3):
+    """Liest die Inferenzzeiten der einzelnen Läufe aus prediction_report.json."""
     times = []
     for i in range(1, n_runs + 1):
         report = os.path.join(BASE, "predictions", f"{case_name}_run_{i}",
@@ -36,6 +38,7 @@ def load_inference_times(case_name, n_runs=3):
 
 
 def load_aux_time(key):
+    """Liest einen Zeitwert per Schlüssel aus logs/aux_times.yaml."""
     path = os.path.join(LOGS, "aux_times.yaml")
     if not os.path.exists(path):
         return None
@@ -100,7 +103,6 @@ def summarize_case(case_key, mesh_stem, solver_stem, sim_id, graph_yaml_name,
             with open(resume_log) as f:
                 content = f.read()
             if "SIMPLE solution converged" in content:
-                import re
                 m = re.search(r"SIMPLE solution converged in (\d+) iterations", content)
                 status = "Converged"
                 result["simpleFoam_converged_at_iter"] = int(m.group(1)) if m else None
@@ -176,6 +178,7 @@ def summarize_case(case_key, mesh_stem, solver_stem, sim_id, graph_yaml_name,
 
 
 def main():
+    """Konsolidiert alle Fälle und schreibt run_log.yaml."""
     cases = [
         {
             "case_key":    "sturm",

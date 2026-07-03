@@ -7,7 +7,7 @@ Führt Vorhersagen für beliebige Graphen durch und speichert:
   - Optional: Ground Truth und Fehler (falls .y im Graphen vorhanden)
 
 Verwendung — neuer Graph ohne Ground Truth:
-  python predict.py \
+  python predict_single.py \
     --model gcn \
     --checkpoint /path/to/gcn/best_model.pt \
     --graph /path/to/new_graph.pt \
@@ -15,7 +15,7 @@ Verwendung — neuer Graph ohne Ground Truth:
     --prefix sim_new
 
 Verwendung — Testgraph mit Ground Truth:
-  python predict.py \
+  python predict_single.py \
     --model gat \
     --checkpoint /path/to/gat/best_model.pt \
     --graph /path/to/datasets/medium/test.pt \
@@ -39,10 +39,12 @@ FIELD_NAMES = ["Ux", "Uy", "Uz", "p", "k", "epsilon"]
 
 
 def denormalize(tensor: torch.Tensor, mean: torch.Tensor, std: torch.Tensor) -> torch.Tensor:
+    """Macht die z-Score-Normalisierung rückgängig."""
     return tensor * std + mean
 
 
 def load_gcn_model(checkpoint_path: Path, device):
+    """Lädt das GCN-Modell samt Normalisierungsstatistiken aus dem Checkpoint."""
     from trainGCN import GCNSurrogate
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     hp = ckpt["hyperparameters"]
@@ -58,6 +60,7 @@ def load_gcn_model(checkpoint_path: Path, device):
 
 
 def load_gat_model(checkpoint_path: Path, device):
+    """Lädt das GATv2-Modell samt Normalisierungsstatistiken aus dem Checkpoint."""
     from trainGATv2 import GATv2Surrogate
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     hp = ckpt["hyperparameters"]
@@ -95,6 +98,7 @@ def run_inference(model, data, device, stats: dict):
 
 
 def save_vtu(pos: np.ndarray, fields: dict, path: Path):
+    """Speichert eine Punktwolke mit Feldern als VTU-Datei."""
     cloud = pv.PolyData(pos)
     for name, values in fields.items():
         cloud.point_data[name] = values
@@ -103,6 +107,7 @@ def save_vtu(pos: np.ndarray, fields: dict, path: Path):
 
 
 def main():
+    """Parst CLI-Argumente, führt die Inferenz durch und speichert die Ausgaben."""
     parser = argparse.ArgumentParser(description="GNN Inferenz für neue Graphen")
     parser.add_argument("--model",       required=True, choices=["gcn", "gat"],
                         help="Modelltyp: gcn oder gat")

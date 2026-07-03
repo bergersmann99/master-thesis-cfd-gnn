@@ -137,7 +137,7 @@ def build_rows(name, run_dir, strategy):
         # no_cellvol: Log ist nur der Resume-Schwanz -> kenntlich machen
         if rows[0][0] > 1:
             note = (f"NUR Resume-Schwanz {rows[0][0]}..{rows[-1][0]} verfuegbar "
-                    f"(fruehe Historie verloren)")
+                    "(fruehe Historie verloren)")
         return rows, note
 
     # strategy == "history": volle Kurve aus JSON, LR rekonstruiert + echte Log-LR
@@ -158,6 +158,7 @@ def build_rows(name, run_dir, strategy):
 
 
 def main():
+    """Schreibt die Kurven-CSV fuer alle Laeufe und gibt eine Zusammenfassung aus."""
     OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     summary = []
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as fh:

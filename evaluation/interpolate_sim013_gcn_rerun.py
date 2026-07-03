@@ -27,6 +27,7 @@ cfg = boto3.s3.transfer.TransferConfig(multipart_threshold=64*1024*1024,
 
 
 def stack(m):
+    """Stapelt U, p, k und epsilon eines Meshes zu einem (N, 6)-Array."""
     U = np.asarray(m['U'], dtype=np.float32)
     return np.column_stack([U[:, 0], U[:, 1], U[:, 2],
                             np.asarray(m['p'], dtype=np.float32),
@@ -35,6 +36,7 @@ def stack(m):
 
 
 def extract_npy(res, tmp_dir):
+    """Extrahiert Positionen, Vorhersage und Ground Truth der Auflösung res nach .npy."""
     src = os.path.join(BASE, f'gcn_{res}')
     pred_mesh = pv.read(os.path.join(src, 'vorhersage.vtu'))
     gt_mesh = pv.read(os.path.join(src, 'ground_truth.vtu'))
@@ -46,6 +48,7 @@ def extract_npy(res, tmp_dir):
 
 
 def main():
+    """Interpoliert alle GCN-Rerun-Auflösungen auf das Vollnetz und lädt sie nach S3."""
     os.makedirs(OUT_LOCAL, exist_ok=True)
     for res in RESOLUTIONS:
         print(f"\n=== gcn_{res} / sim_013 ===", flush=True)

@@ -77,7 +77,8 @@ def load_history(json_path):
     val_loss, learning_rate, best_epoch, best_val_loss zurueck.
 
     learning_rate wird rekonstruiert, falls nicht enthalten."""
-    h = json.load(open(json_path))
+    with open(json_path) as f:
+        h = json.load(f)
     train = np.asarray(h["train_loss"], dtype=float)
     val = np.asarray(h["val_loss"], dtype=float)
     n = len(train)
@@ -147,6 +148,7 @@ def reconstruct_lr(val_loss, init_lr=1e-4, factor=0.5,
 # ----------------------------------------------------------------------
 
 def plot_stage(stage, gcn_h, gat_h, out_path):
+    """Zeichnet Verlust- und Lernratenkurven (GCN vs. GATv2) fuer eine Stufe."""
     fig, (ax_loss, ax_lr) = plt.subplots(
         2, 1, figsize=(9, 6.5),
         sharex=True,
@@ -212,6 +214,7 @@ def plot_stage(stage, gcn_h, gat_h, out_path):
 # ----------------------------------------------------------------------
 
 def main():
+    """Erzeugt je Subsampling-Stufe eine Abbildung und gibt eine Konsolentabelle aus."""
     os.makedirs(FIG_DIR, exist_ok=True)
 
     print(f"{'Stufe':<8} {'Modell':<7} {'#Ep':>6} {'best_ep':>9} "

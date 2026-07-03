@@ -53,6 +53,7 @@ def parse_checkmesh(case_dir):
 
 
 def run(level, config_path, num_cores=4):
+    """Fuehrt die Mesh-Schritte 1-6 fuer eine Stufe aus und misst die Zeiten je Schritt."""
     print(f"\n{'='*70}\n{level.upper()} — config: {config_path}\n{'='*70}", flush=True)
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
@@ -130,6 +131,7 @@ def run(level, config_path, num_cores=4):
 
 
 def main():
+    """Parst CLI-Argumente, startet den Mesh-Lauf und schreibt das Ergebnis-YAML."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--level", required=True, choices=["coarse", "medium", "fine"])
     ap.add_argument("--cores", type=int, default=4)

@@ -142,7 +142,7 @@ def collect_results(paths: dict[str, str], sim_id: str):
         if y.shape[1] != 6:
             raise ValueError(
                 f"Level '{level}': unerwartete y-Form {tuple(y.shape)}, "
-                f"erwartet (N, 6)."
+                "erwartet (N, 6)."
             )
         results[level] = compute_minmax(y)
         print(f"  [{level:6s}] {path}  (N={y.shape[0]})")
@@ -209,6 +209,7 @@ def write_markdown(results: dict, sim_id: str, md_path: str) -> None:
 
 
 def parse_args(argv=None) -> argparse.Namespace:
+    """Parse die Kommandozeilenargumente."""
     parser = argparse.ArgumentParser(
         description="Min/Max der subgesampleten Ground Truth je Subsampling-Level."
     )
@@ -226,6 +227,7 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 
 def main(argv=None) -> int:
+    """Programmeinstieg; gibt den Exit-Code zurueck."""
     args = parse_args(argv)
 
     paths = {

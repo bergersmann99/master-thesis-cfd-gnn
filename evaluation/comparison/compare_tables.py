@@ -521,6 +521,7 @@ def generate_cost_table(models):
 # ======================================================================
 
 def main():
+    """Laedt die Modelle und schreibt alle Vergleichstabellen (Markdown, LaTeX)."""
     parser = argparse.ArgumentParser(
         description="Vergleichstabellen fuer GNN-Modelle")
 
@@ -588,7 +589,7 @@ def main():
         f.write(rl2_tex + "\n")
 
     print(f"  LaTeX:    {tex_path}")
-    print(f"  Fertig.\n")
+    print("  Fertig.\n")
 
 
 if __name__ == "__main__":

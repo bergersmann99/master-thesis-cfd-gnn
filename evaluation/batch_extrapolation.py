@@ -37,7 +37,7 @@ S3_CFG = boto3.s3.transfer.TransferConfig(multipart_threshold=64*1024*1024, mult
 def write_eval_config(net, cfg, ckpt, res, out_dir):
     """Erzeuge YAML-Eval-Config für diesen Netz/Config-Lauf."""
     yaml_path = f'/tmp/extrap_eval_{net}_{cfg}.yaml'
-    with open(yaml_path, 'w') as f:
+    with open(yaml_path, 'w', encoding='utf-8') as f:
         f.write(f"""mode: eval
 checkpoint: {ckpt}
 graph_source: {PT_DIR}/{res}_{cfg}.pt
@@ -49,11 +49,13 @@ export_numpy: false
 
 
 def extract_npy(eval_dir, sim_name):
+    """Liest Vorhersage- und Ground-Truth-VTU und liefert (Positionen, Pred, True) als Arrays."""
     pred = pv.read(os.path.join(eval_dir, sim_name, 'vorhersage.vtu'))
     gt   = pv.read(os.path.join(eval_dir, sim_name, 'ground_truth.vtu'))
     pos = np.asarray(pred.points, dtype=np.float32)
 
     def stack(m):
+        """Stapelt U, p, k und epsilon eines Meshes zu einem (N, 6)-Array."""
         U = np.asarray(m['U'], dtype=np.float32)
         return np.column_stack([U[:,0], U[:,1], U[:,2],
                                 np.asarray(m['p'],       dtype=np.float32),
@@ -63,6 +65,7 @@ def extract_npy(eval_dir, sim_name):
 
 
 def main():
+    """Führt Eval, Interpolation und S3-Upload für alle Netzwerke und Configs aus."""
     os.makedirs(OUT_BASE, exist_ok=True)
     summary = []
 
@@ -138,7 +141,7 @@ def main():
 
     # Save summary JSON
     summary_path = os.path.join(OUT_BASE, 'r2_summary.json')
-    with open(summary_path, 'w') as f:
+    with open(summary_path, 'w', encoding='utf-8') as f:
         json.dump([{'network': n, 'config': c, 'r2_all_6': a, 'r2_no_k_eps': b}
                    for n,c,a,b in summary], f, indent=2)
     s3.upload_file(summary_path, BUCKET,

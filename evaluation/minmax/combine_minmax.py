@@ -79,6 +79,7 @@ def write_markdown(sim_id: str, sources: list[tuple[str, dict]],
 
 
 def parse_args(argv=None) -> argparse.Namespace:
+    """Parse die Kommandozeilenargumente."""
     parser = argparse.ArgumentParser(
         description="Kombiniere GT- und Vorhersage-Min/Max-CSVs zu einer "
                     "Markdown-Tabelle."
@@ -95,6 +96,7 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 
 def main(argv=None) -> int:
+    """Programmeinstieg; gibt den Exit-Code zurueck."""
     args = parse_args(argv)
     try:
         sources = [(label, read_csv(path)) for label, path in args.source]

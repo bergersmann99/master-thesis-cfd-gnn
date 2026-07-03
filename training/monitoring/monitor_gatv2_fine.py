@@ -9,16 +9,18 @@ from pathlib import Path
 LOG_FILE     = Path("/home/tbergermann/Python/GAT/output_gatv2_fine.log")
 DOC_FILE     = Path("/home/tbergermann/Python/logs/GATv2/training_GATv2_fine.md")
 TOTAL_EPOCHS = 800
-INTERVAL     = 50
+INTERVAL     = 50    # alle N Epochen dokumentieren
 POLL_SEC     = 60  # Fine-Graphen brauchen länger → 60s Polling
 
 logged_milestones = set()
 
 def is_training_running():
+    """Prüft per pgrep, ob der Trainingsprozess noch läuft."""
     r = subprocess.run(["pgrep", "-f", "output_gatv2_fine"], capture_output=True)
     return r.returncode == 0
 
 def parse_epoch_line(line):
+    """Extrahiert Epoche, Train, Val, Best, LR, Zeit aus einer Fortschrittszeile."""
     m = re.search(r'\[(\d+)/\d+\]\s+T:([\d.]+)\s+V:([\d.]+)\s+best:([\d.]+)\s+LR:([\d.e+-]+)\s+\|\s+([\dm\s]+)', line)
     if m:
         return {
@@ -32,9 +34,11 @@ def parse_epoch_line(line):
     return None
 
 def count_lr_reductions(log_text):
+    """Zählt die im Log vermerkten LR-Reduktionen."""
     return log_text.count("Lernrate reduziert")
 
 def append_table_row(doc_path, entry, lr_reductions_total):
+    """Hängt eine Zeile in die Trainingstabelle im Markdown ein."""
     content = doc_path.read_text()
     note = f"Best: {entry['best']:.5f}"
     if lr_reductions_total > 0:
@@ -47,6 +51,7 @@ def append_table_row(doc_path, entry, lr_reductions_total):
         print(f"[Monitor GATv2 Fine] Epoche {entry['epoch']} dokumentiert.")
 
 def update_lr_reductions_section(doc_path, log_text):
+    """Aktualisiert den LR-Reduktionen Abschnitt."""
     reductions = re.findall(r"Lernrate reduziert: ([\d.e+-]+) -> ([\d.e+-]+)", log_text)
     if not reductions:
         return
@@ -60,6 +65,7 @@ def update_lr_reductions_section(doc_path, log_text):
     doc_path.write_text(content)
 
 def finalize_results(doc_path, log_text):
+    """Trägt Test-Metriken nach Trainingsabschluss ein."""
     fields = ["Ux", "Uy", "Uz", "p", "k", "epsilon"]
     gesamt_pattern = r"GESAMT\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([-\d.]+)\s+([\d.]+)"
 
@@ -104,6 +110,7 @@ def finalize_results(doc_path, log_text):
     print("[Monitor GATv2 Fine] Ergebnisse eingetragen.")
 
 def main():
+    """Hauptschleife: pollt das Trainings-Log, dokumentiert Meilenstein-Epochen und trägt nach Trainingsende die Ergebnisse ein."""
     print("[Monitor GATv2 Fine] Gestartet. Warte auf Log-Datei...")
     last_milestone = 0
 

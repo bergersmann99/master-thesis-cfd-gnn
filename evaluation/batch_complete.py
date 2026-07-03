@@ -7,7 +7,7 @@ Schlanker Komplett-Batch:
 2) no_cellvol: Test (sim_001/013/014) + Val (sim_012) + Extrapolation
    -> NUR sparse VTU (kein IDW, kein CFD-Mesh) -- mesh-freie Variante
 """
-import os, json, subprocess, shutil
+import os, subprocess, shutil
 import numpy as np
 import torch
 import pyvista as pv
@@ -33,7 +33,8 @@ EXTRAP_MESHES  = '/tmp/extrap_meshes'
 
 
 def write_eval_yaml(checkpoint, graph_source, output_dir, path):
-    with open(path, 'w') as f:
+    """Schreibt eine YAML-Eval-Config für predict.py."""
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(f"""mode: eval
 checkpoint: {checkpoint}
 graph_source: {graph_source}
@@ -44,6 +45,7 @@ export_numpy: false
 
 
 def run_eval(yaml_path, label):
+    """Führt predict.py im Eval-Modus aus; liefert True bei Erfolg."""
     print(f"\n  >> EVAL {label}")
     r = subprocess.run([PYTHON, PREDICT, '--config', yaml_path],
                        capture_output=True, text=True)
@@ -66,11 +68,13 @@ def upload_sparse(eval_dir, sim_subdir, s3_key, label):
 
 
 def interp_and_upload(eval_dir, sim_subdir, mesh_path, s3_key, out_vtu, label):
+    """Interpoliert sparse Vorhersagen per IDW auf das volle CFD-Mesh und lädt sie nach S3."""
     pred = pv.read(os.path.join(eval_dir, sim_subdir, 'vorhersage.vtu'))
     gt   = pv.read(os.path.join(eval_dir, sim_subdir, 'ground_truth.vtu'))
     pos  = np.asarray(pred.points, dtype=np.float32)
 
     def stack(m):
+        """Stapelt U, p, k und epsilon eines Meshes zu einem (N, 6)-Array."""
         U = np.asarray(m['U'], dtype=np.float32)
         return np.column_stack([U[:,0], U[:,1], U[:,2],
                                 np.asarray(m['p'],       dtype=np.float32),
@@ -107,6 +111,7 @@ def interp_and_upload(eval_dir, sim_subdir, mesh_path, s3_key, out_vtu, label):
 # 1) Extrapolation gcn_bf25 schwachwind
 # ------------------------------------------------------------------
 def task_extrap_gcn_bf25_schwachwind():
+    """Task 1: Extrapolation gcn_bf25 auf schwachwind_1_5ms_45deg inkl. IDW und Upload."""
     print("\n" + "="*70)
     print("  1) EXTRAPOLATION gcn_bf25 / schwachwind_1_5ms_45deg")
     print("="*70)
@@ -164,6 +169,7 @@ def task_no_cellvol_sparse(label, pt_path, sim_filter, s3_dir_template):
 # 3) no_cellvol Extrapolation (mesh-frei)
 # ------------------------------------------------------------------
 def task_no_cellvol_extrap_sparse():
+    """Task 3: no_cellvol-Extrapolation (sturm + schwachwind), nur sparse VTU."""
     print("\n" + "="*70)
     print("  no_cellvol Extrapolation (sparse, mesh-frei)")
     print("="*70)
@@ -197,6 +203,7 @@ def task_no_cellvol_extrap_sparse():
 
 
 def main():
+    """Führt alle Batch-Tasks nacheinander aus."""
     task_extrap_gcn_bf25_schwachwind()
 
     task_no_cellvol_sparse(

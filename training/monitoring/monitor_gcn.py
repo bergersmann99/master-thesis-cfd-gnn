@@ -15,6 +15,7 @@ POLL_SEC     = 30    # alle 30s Log prüfen
 logged_milestones = set([0, 1, 2])  # schon manuell eingetragen
 
 def is_training_running():
+    """Prüft per pgrep, ob der Trainingsprozess noch läuft."""
     r = subprocess.run(["pgrep", "-f", "trainGCN.py"], capture_output=True)
     return r.returncode == 0
 
@@ -33,6 +34,7 @@ def parse_epoch_line(line):
     return None
 
 def count_lr_reductions(log_text):
+    """Zählt die im Log vermerkten LR-Reduktionen."""
     return log_text.count("Lernrate reduziert")
 
 def append_table_row(doc_path, entry, lr_reductions_total):
@@ -52,7 +54,7 @@ def append_table_row(doc_path, entry, lr_reductions_total):
         doc_path.write_text(content)
         print(f"[Monitor] Epoche {entry['epoch']} dokumentiert.")
     else:
-        print(f"[Monitor] Marker nicht gefunden, Zeile wird angehängt.")
+        print("[Monitor] Marker nicht gefunden, Zeile wird angehängt.")
 
 def update_lr_reductions_section(doc_path, log_text):
     """Aktualisiert den LR-Reduktionen Abschnitt."""
@@ -72,6 +74,7 @@ def update_lr_reductions_section(doc_path, log_text):
     doc_path.write_text(content)
 
 def main():
+    """Hauptschleife: pollt das Trainings-Log und dokumentiert Meilenstein-Epochen."""
     print("[Monitor] Gestartet. Prüfe alle 30s...")
     last_milestone = max(logged_milestones)
 
@@ -108,6 +111,7 @@ def main():
             next_milestone += INTERVAL
 
         # Training beendet?
+        # TOTAL_EPOCHS - 5: Abschluss gilt erst, wenn das Log (fast) die Ziel-Epoche erreicht hat (Toleranz: 5 Epochen)
         if not is_training_running() and current_epoch >= TOTAL_EPOCHS - 5:
             print("[Monitor] Training abgeschlossen.")
             # Finalen Stand dokumentieren falls noch nicht geschehen

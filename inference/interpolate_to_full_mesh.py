@@ -144,6 +144,7 @@ def load_full_mesh(mesh_path: Path) -> tuple[np.ndarray, pv.DataSet | None]:
 # ── Hauptprogramm ─────────────────────────────────────────────────────────────
 
 def main():
+    """Parst CLI-Argumente, interpoliert die Vorhersage und schreibt die VTU-Ausgabe."""
     parser = argparse.ArgumentParser(
         description="Interpoliert GNN-Vorhersagen auf das vollständige CFD-Netz",
         formatter_class=argparse.RawDescriptionHelpFormatter,

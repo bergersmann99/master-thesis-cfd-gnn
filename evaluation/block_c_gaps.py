@@ -36,9 +36,7 @@ import sys
 import json
 import csv
 
-import numpy as np
 import torch
-import yaml
 
 # evaluate_detailed und Helfer aus dem Training-Skript wiederverwenden.
 sys.path.insert(0, "/home/tbergermann/Python/GNN")
@@ -98,11 +96,13 @@ TOL_R2_PERSIM = 0.0005
 
 
 def abort(msg):
+    """Gibt msg auf stderr aus und beendet das Skript mit Exit-Code 1."""
     print(f"\nABBRUCH: {msg}", file=sys.stderr)
     sys.exit(1)
 
 
 def fmt6(x):
+    """Formatiert x mit sechs Nachkommastellen."""
     return f"{x:.6f}"
 
 
@@ -111,6 +111,7 @@ def fmt6(x):
 # ----------------------------------------------------------------------
 
 def aufgabe1():
+    """Aufgabe 1: verifiziert R2_gesamt je Stufe und schreibt gap1_rL2_gesamt.yaml."""
     print("=" * 72)
     print("Aufgabe 1: rL2 (gesamt) je Stufe auf dem Testset")
     print("=" * 72)
@@ -119,7 +120,8 @@ def aufgabe1():
         tm_path = cfg["test_metrics"]
         if not os.path.exists(tm_path):
             abort(f"Stufe '{stage}': test_metrics.json fehlt: {tm_path}")
-        tm = json.load(open(tm_path))
+        with open(tm_path) as f:
+            tm = json.load(f)
         if "gesamt" not in tm or "R2" not in tm["gesamt"] or "rL2" not in tm["gesamt"]:
             abort(f"Stufe '{stage}': test_metrics.json unvollstaendig.")
         r2 = float(tm["gesamt"]["R2"])
@@ -136,7 +138,7 @@ def aufgabe1():
               f"(Vorgabe R2={cfg['expected_R2']}, |Δ|={abs(r2-cfg['expected_R2']):.6f} <= {TOL_R2_TEST})")
 
     out_path = os.path.join(OUT_DIR, "gap1_rL2_gesamt.yaml")
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         # Reihenfolge erhalten
         f.write("# Aufgabe 1 — rL2 (gesamt) je Stufe auf dem Testset\n")
         f.write("# Quelle: output_gcn_<stufe>_rerun/test_metrics.json\n")
@@ -155,6 +157,7 @@ def aufgabe1():
 # ----------------------------------------------------------------------
 
 def aufgabe2():
+    """Aufgabe 2: berechnet feldweise R² je Test-Sim (Medium) und schreibt CSV + Markdown."""
     print("\n" + "=" * 72)
     print("Aufgabe 2: feldweise R² je Test-Sim — Stufe Medium")
     print("=" * 72)
@@ -199,7 +202,7 @@ def aufgabe2():
     # Sim-IDs aus den Data-Objekten, NICHT aus Listenindex
     for g in test_data:
         if not hasattr(g, "sim_id"):
-            abort(f"Graph ohne sim_id-Attribut gefunden.")
+            abort("Graph ohne sim_id-Attribut gefunden.")
 
     expected_set = set(EXPECTED_PER_SIM.keys())
     found_set = {g.sim_id for g in test_data}
@@ -252,7 +255,7 @@ def aufgabe2():
 
     # CSV schreiben
     csv_path = os.path.join(OUT_DIR, "gap2_per_sim_medium.csv")
-    with open(csv_path, "w", newline="") as f:
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["sim"] + FIELDS + ["gesamt"])
         for row in rows:
@@ -265,7 +268,7 @@ def aufgabe2():
 
     # Markdown schreiben
     md_path = os.path.join(OUT_DIR, "gap2_per_sim_medium.md")
-    with open(md_path, "w") as f:
+    with open(md_path, "w", encoding="utf-8") as f:
         f.write("# Aufgabe 2 — feldweise R² je Test-Sim (GCN Medium-Rerun)\n\n")
         f.write(f"Checkpoint: `{cfg['ckpt']}` (epoch={ck['epoch']})\n\n")
         f.write("| sim | " + " | ".join(FIELDS) + " | gesamt |\n")
@@ -281,6 +284,7 @@ def aufgabe2():
 
 
 def main():
+    """Fuehrt beide Aufgaben nacheinander aus."""
     aufgabe1()
     aufgabe2()
     print("\nFertig.")

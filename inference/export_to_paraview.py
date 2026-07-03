@@ -13,23 +13,18 @@ Verwendung:
   python export_to_paraview.py \
     --gcn-checkpoint  /path/to/gcn/best_model.pt \
     --gat-checkpoint  /path/to/gat/best_model.pt \
-    --gcn-stats       /path/to/gcn/norm_stats.json \
-    --gat-stats       /path/to/gat/norm_stats.json \
     --data-dir        /path/to/datasets/medium \
     --output-dir      /path/to/paraview_export \
     --subsampling     medium
 """
 
 import argparse
-import json
 import sys
 from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 import pyvista as pv
-from torch_geometric.loader import DataLoader
 
 # ── Modell-Importe ────────────────────────────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).parent / "GNN"))
@@ -38,12 +33,8 @@ sys.path.insert(0, str(Path(__file__).parent / "GAT"))
 FIELD_NAMES = ["Ux", "Uy", "Uz", "p", "k", "epsilon"]
 
 
-def load_norm_stats(stats_path: Path) -> dict:
-    with open(stats_path) as f:
-        return json.load(f)
-
-
 def denormalize(tensor: torch.Tensor, mean: torch.Tensor, std: torch.Tensor) -> torch.Tensor:
+    """Macht die z-Score-Normalisierung rückgängig."""
     return tensor * std + mean
 
 
@@ -112,6 +103,7 @@ def export_graph(pos, pred, true, out_dir: Path, prefix: str):
 
 
 def load_gcn_model(checkpoint_path: Path, device):
+    """Lädt das GCN-Modell samt Normalisierungsstatistiken aus dem Checkpoint."""
     from trainGCN import GCNSurrogate
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     hp = ckpt["hyperparameters"]
@@ -127,6 +119,7 @@ def load_gcn_model(checkpoint_path: Path, device):
 
 
 def load_gat_model(checkpoint_path: Path, device):
+    """Lädt das GATv2-Modell samt Normalisierungsstatistiken aus dem Checkpoint."""
     from trainGATv2 import GATv2Surrogate
     ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
     hp = ckpt["hyperparameters"]
@@ -144,6 +137,7 @@ def load_gat_model(checkpoint_path: Path, device):
 
 
 def main():
+    """Parst CLI-Argumente und exportiert Testgraphen beider Modelle als VTU-Dateien."""
     parser = argparse.ArgumentParser(description="Export GNN predictions to ParaView VTU files")
     parser.add_argument("--gcn-checkpoint", type=str, required=False,
                         help="Pfad zum besten GCN Checkpoint (.pt)")

@@ -56,7 +56,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, GATv2Conv
-from functools import partial
 
 
 # ======================================================================
@@ -653,9 +652,6 @@ def run_eval(model, norm_stats, hp, arch_name, cfg, device):
         t_inf = result["inference_time_s"]
         total_inference_time += t_inf
 
-        # Ground Truth denormalisieren
-        y_mean = norm_stats["y_mean"].cpu()
-        y_std = norm_stats["y_std"].cpu()
         # Die y-Daten sind noch unnormalisiert (direkt aus test.pt)
         true = data.y.numpy()
 
@@ -782,6 +778,7 @@ def run_eval(model, norm_stats, hp, arch_name, cfg, device):
 # ======================================================================
 
 def main():
+    """Parst CLI/Config, laedt das Modell und startet den gewaehlten Modus."""
     parser = argparse.ArgumentParser(
         description="GNN-Surrogat Inferenz und Evaluation")
 

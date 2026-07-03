@@ -28,6 +28,7 @@ SEED            = 42
 
 
 def main():
+    """Fuehrt die Graph-Konstruktion mit Timing je Stufe aus und schreibt optional ein YAML."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--sim-id",      default="sturm_25ms_45deg",
                     help="Simulations-ID (z.B. sturm_25ms_45deg)")

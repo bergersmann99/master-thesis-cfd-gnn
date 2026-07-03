@@ -9,16 +9,18 @@ from pathlib import Path
 LOG_FILE     = Path("/home/tbergermann/Python/GAT/output_gatv2_medium.log")
 DOC_FILE     = Path("/home/tbergermann/Python/logs/GATv2/training_GATv2_medium.md")
 TOTAL_EPOCHS = 500
-INTERVAL     = 50
-POLL_SEC     = 30
+INTERVAL     = 50    # alle N Epochen dokumentieren
+POLL_SEC     = 30    # alle 30s Log prüfen
 
-logged_milestones = set([0])
+logged_milestones = set([0])  # Epoche 0 gilt als bereits dokumentiert
 
 def is_training_running():
+    """Prüft per pgrep, ob der Trainingsprozess noch läuft."""
     r = subprocess.run(["pgrep", "-f", "trainGATv2.py"], capture_output=True)
     return r.returncode == 0
 
 def parse_epoch_line(line):
+    """Extrahiert Epoche, Train, Val, Best, LR, Zeit aus einer Fortschrittszeile."""
     m = re.search(r'\[(\d+)/\d+\]\s+T:([\d.]+)\s+V:([\d.]+)\s+best:([\d.]+)\s+LR:([\d.e+-]+)\s+\|\s+([\dm\s]+)', line)
     if m:
         return {
@@ -32,9 +34,11 @@ def parse_epoch_line(line):
     return None
 
 def count_lr_reductions(log_text):
+    """Zählt die im Log vermerkten LR-Reduktionen."""
     return log_text.count("Lernrate reduziert")
 
 def append_table_row(doc_path, entry, lr_reductions_total):
+    """Hängt eine Zeile in die Trainingstabelle im Markdown ein."""
     content = doc_path.read_text()
     note = f"Best: {entry['best']:.5f}"
     if lr_reductions_total > 0:
@@ -47,6 +51,7 @@ def append_table_row(doc_path, entry, lr_reductions_total):
         print(f"[Monitor GAT] Epoche {entry['epoch']} dokumentiert.")
 
 def update_lr_reductions_section(doc_path, log_text):
+    """Aktualisiert den LR-Reduktionen Abschnitt."""
     reductions = re.findall(r"Lernrate reduziert: ([\d.e+-]+) -> ([\d.e+-]+)", log_text)
     if not reductions:
         return
@@ -57,6 +62,7 @@ def update_lr_reductions_section(doc_path, log_text):
     doc_path.write_text(content)
 
 def main():
+    """Hauptschleife: pollt das Trainings-Log und dokumentiert Meilenstein-Epochen."""
     print("[Monitor GAT] Gestartet.")
     last_milestone = 0
 
@@ -89,6 +95,7 @@ def main():
                 last_milestone = next_milestone
             next_milestone += INTERVAL
 
+        # TOTAL_EPOCHS - 5: Abschluss gilt erst, wenn das Log (fast) die Ziel-Epoche erreicht hat (Toleranz: 5 Epochen)
         if not is_training_running() and current_epoch >= TOTAL_EPOCHS - 5:
             print("[Monitor GAT] Training abgeschlossen.")
             break

@@ -15,7 +15,6 @@ import pyvista as pv
 NETWORKS = ['gatv2_coarse', 'gatv2_medium', 'gatv2_bf25',
             'gcn_coarse', 'gcn_medium', 'gcn_bf25']
 SIMS = ['sim_001', 'sim_013', 'sim_014']
-ITERATIONS = {'sim_001': '1227', 'sim_013': '1151', 'sim_014': '1243'}
 
 BASE = '/home/tbergermann/Python/predictions'
 TMP = '/tmp'
@@ -31,12 +30,14 @@ PYTHON = '/home/tbergermann/Python/venv/bin/python'
 
 
 def extract_npy(eval_dir, sim, out_dir):
+    """Extrahiert Positionen, Vorhersage und Ground Truth aus den sparse VTUs nach .npy."""
     pred_path = os.path.join(eval_dir, sim, 'vorhersage.vtu')
     gt_path = os.path.join(eval_dir, sim, 'ground_truth.vtu')
     pred_mesh = pv.read(pred_path)
     gt_mesh = pv.read(gt_path)
 
     def stack(m):
+        """Stapelt U, p, k und epsilon eines Meshes zu einem (N, 6)-Array."""
         U = np.asarray(m['U'], dtype=np.float32)
         return np.column_stack([U[:,0], U[:,1], U[:,2],
                                 np.asarray(m['p'], dtype=np.float32),
@@ -51,6 +52,7 @@ def extract_npy(eval_dir, sim, out_dir):
 
 
 def main():
+    """Interpoliert alle (Netzwerk, Sim)-Kombinationen auf das volle CFD-Mesh."""
     only_network = sys.argv[1] if len(sys.argv) > 1 else None
     only_sim = sys.argv[2] if len(sys.argv) > 2 else None
 
@@ -72,7 +74,7 @@ def main():
 
             print(f"\n=== {net} / {sim} ===")
             npy_dir = os.path.join(TMP, f'{net}_{sim}_npy')
-            print(f"  npy extrahieren ...")
+            print("  npy extrahieren ...")
             extract_npy(eval_dir, sim, npy_dir)
 
             mesh_path = os.path.join(VTK_SUBDIRS[sim], 'internal.vtu')
@@ -80,7 +82,7 @@ def main():
             os.makedirs(output_dir, exist_ok=True)
             output_path = os.path.join(output_dir, f'{net}.vtu')
 
-            print(f"  IDW-Interpolation ...")
+            print("  IDW-Interpolation ...")
             cmd = [PYTHON, INTERP_SCRIPT,
                    '--pos', os.path.join(npy_dir, 'positions.npy'),
                    '--pred', os.path.join(npy_dir, 'prediction.npy'),
