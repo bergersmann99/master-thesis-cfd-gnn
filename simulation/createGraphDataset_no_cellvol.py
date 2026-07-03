@@ -1232,6 +1232,15 @@ def main():
     )
     print(f"   Subsampling-Report: {report_path}")
 
+    # Dateigroessen jetzt erfassen — nach dem S3-Upload wird output_dir
+    # geloescht, eine spaetere Messung ergaebe immer 0 MB.
+    total_size_bytes = 0
+    for fname in ["train.pt", "val.pt", "test.pt"]:
+        fpath = os.path.join(output_dir, fname)
+        if os.path.exists(fpath):
+            total_size_bytes += os.path.getsize(fpath)
+    total_size_mb = total_size_bytes / (1024 * 1024)
+
     # ------------------------------------------------------------------
     # S3-Upload der Graph-Dateien
     # ------------------------------------------------------------------
@@ -1272,14 +1281,6 @@ def main():
     total_time = time.time() - start_time
     minutes = int(total_time // 60)
     seconds = int(total_time % 60)
-
-    # Dategroessen
-    total_size_bytes = 0
-    for fname in ["train.pt", "val.pt", "test.pt"]:
-        fpath = os.path.join(output_dir, fname)
-        if os.path.exists(fpath):
-            total_size_bytes += os.path.getsize(fpath)
-    total_size_mb = total_size_bytes / (1024 * 1024)
 
     avg_nodes = total_nodes_subsampled // max(n_success, 1)
     avg_edges = total_edges // max(n_success, 1)
