@@ -24,7 +24,8 @@ fi
 
 # Aktuellen Stand aus simpleFoam-Log auslesen
 LAST_TIME=$(grep "^Time = " "$CASE/log.simpleFoam" 2>/dev/null | tail -1 | awk '{print $NF}')
-CLOCK=$(grep "ClockTime" "$CASE/log.simpleFoam" 2>/dev/null | tail -1 | awk '{print $NF}')
+# ClockTime-Zeile endet auf "... ClockTime = 13 s" -> Zahl ist das vorletzte Feld
+CLOCK=$(grep "ClockTime" "$CASE/log.simpleFoam" 2>/dev/null | tail -1 | awk '{print $(NF-1)}')
 
 log "  Letzter simpleFoam-Zeitschritt: ${LAST_TIME:-unbekannt}"
 log "  ClockTime beim Stop:            ${CLOCK:-unbekannt} s"

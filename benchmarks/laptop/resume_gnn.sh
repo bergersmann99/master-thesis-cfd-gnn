@@ -59,7 +59,8 @@ if [ "${LAST_TIME:-0}" -lt 3000 ] 2>/dev/null; then
 
     # Gesamte simpleFoam-Zeit (Morgen + Abend) berechnen
     MORNING=$(grep "^simpleFoam_morning_clocktime_s:" "$AUX" 2>/dev/null | tail -1 | awk '{print $2}')
-    RESUME_CLOCK=$(grep "ClockTime" "$CASE/log.simpleFoam_resume" 2>/dev/null | tail -1 | awk '{print $NF}')
+    # ClockTime-Zeile endet auf "... ClockTime = 13 s" -> Zahl ist das vorletzte Feld
+    RESUME_CLOCK=$(grep "ClockTime" "$CASE/log.simpleFoam_resume" 2>/dev/null | tail -1 | awk '{print $(NF-1)}')
     if [ -n "$MORNING" ] && [ -n "$RESUME_CLOCK" ]; then
         TOTAL=$(( MORNING + RESUME_CLOCK ))
         echo "simpleFoam_total_clocktime_s: ${TOTAL}" >> "$AUX"
