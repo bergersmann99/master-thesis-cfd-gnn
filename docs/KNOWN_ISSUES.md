@@ -1,10 +1,14 @@
-# Bekannte Probleme (bewusst NICHT gefixt)
+# Bekannte Probleme
 
-Beim Import ins Repo wurden diese Bugs/Inkonsistenzen gefunden. Sie wurden **nicht** korrigiert,
-weil das Refactoring verhaltensneutral bleiben sollte (Ergebnisse der Masterarbeit wurden mit
-diesem Code erzeugt). Fixes gehören in einen bewussten, getesteten Folgeschritt.
+Beim Import ins Repo wurden diese Bugs/Inkonsistenzen gefunden. Auf `master` sind sie
+unverändert (Ist-Stand, mit dem die Masterarbeits-Ergebnisse erzeugt wurden).
 
-## Echte Bugs
+**Auf diesem Branch (`fixes/known-issues`) sind die Bugs #1–#6 behoben** — je ein Commit pro
+Fix, ausschließlich Randfall-/Crash-/Reporting-Korrekturen ohne Einfluss auf berechnete
+Ergebnisse. Die Punkte #7 ff. bleiben bewusst offen (Fixes würden Zahlen/Konventionen ändern
+oder gehören zur Roadmap).
+
+## Echte Bugs (#1–#6 hier gefixt, #7–#8 offen)
 
 | # | Datei | Problem |
 |---|-------|---------|
