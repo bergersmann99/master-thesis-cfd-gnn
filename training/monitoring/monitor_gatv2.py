@@ -95,8 +95,10 @@ def main():
                 last_milestone = next_milestone
             next_milestone += INTERVAL
 
-        # TOTAL_EPOCHS - 5: Abschluss gilt erst, wenn das Log (fast) die Ziel-Epoche erreicht hat (Toleranz: 5 Epochen)
-        if not is_training_running() and current_epoch >= TOTAL_EPOCHS - 5:
+        # Abbruch, sobald der Trainingsprozess beendet ist (wie coarse/fine-Monitore).
+        # Die fruehere Zusatzbedingung `current_epoch >= TOTAL_EPOCHS - 5` liess den
+        # Monitor bei Early-Stopping vor dieser Schwelle endlos weiterlaufen.
+        if not is_training_running():
             print("[Monitor GAT] Training abgeschlossen.")
             break
 
