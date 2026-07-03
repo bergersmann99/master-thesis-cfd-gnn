@@ -21,10 +21,13 @@ Stand: 2026-07-03. Dieses Dokument ermöglicht die nahtlose Fortsetzung in einer
 
 ## Offene Punkte (Phase 2)
 
-1. **GitHub:** privates Repo anlegen (User: bergersmann99, gh CLI eingerichtet) + push.
-   `git remote add origin …` fehlt noch.
-2. Optional (Roadmap Prio 1–2): Monitor-Konsolidierung, gemeinsames Trainings-Modul.
-3. Optional: Bugfixes aus KNOWN_ISSUES (bewusst getrennt vom Import-Refactoring).
+1. ~~GitHub~~ **erledigt (2026-07-04):** privates Repo
+   https://github.com/bergersmann99/master-thesis-cfd-gnn — `master` (Ist-Stand) +
+   Branch `fixes/known-issues` (Bugs #1–#6 aus KNOWN_ISSUES behoben, je 1 Commit).
+2. Entscheidung offen: `fixes/known-issues` nach master mergen (empfohlen erst nach
+   einem Referenzlauf auf dem Server) oder für Folgearbeiten stehen lassen.
+3. Optional (Roadmap Prio 1–2): Monitor-Konsolidierung, gemeinsames Trainings-Modul.
+4. Offen aus KNOWN_ISSUES: #7 ff. (Fixes würden Zahlen/Konventionen ändern).
 
 ## Wichtige Fakten für die Fortsetzung
 
