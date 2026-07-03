@@ -1,0 +1,91 @@
+# =============================================================================
+# EXTRAPOLATIONSFALL SCHWACHWIND (v2-Pfad) — abgeleitet aus config_medium_v2.yaml
+# Reine U_ref-Extrapolation: U_ref = 1.5 m/s, angle = 45 Grad
+# Geometrie/Topologie identisch zu config_medium_v2 (cells_per_H = 10).
+# Nur Wind-Parameter geaendert (Mess-Logik der Treiber unveraendert).
+# =============================================================================
+
+general:
+  random_seed: 42
+  num_simulations: 1
+  results_dir: "results_mesh_study_v2"
+  geometry_dir: "geometry"
+  simulation_dir: "simulation"
+  save_vtk: false
+
+hardware:
+  num_cores: 92
+  parallel_jobs: 1
+
+geometry:
+  width: 10.0
+  depth: 10.0
+  wall_height: 6.0
+  roof_height: 2.0
+
+wind:
+  speed_min: 1.5
+  speed_max: 1.5
+  angle_min: 45.0
+  angle_max: 45.0
+
+abl:
+  z_ref: 10.0
+  profile_formula: "U_ref * (z / z_ref) ** alpha"
+  alpha: 0.15
+  turbulence_intensity: 0.1
+  length_scale: 10.0
+  z0: 0.03
+  Ks: 0.6
+  Cs: 0.5
+
+domain:
+  upstream: 5.0
+  downstream: 15.0
+  lateral: 5.0
+  top: 5.0
+  max_blockage: 0.03
+
+mesh:
+  cells_per_H: 10
+  z_grading: 1.0
+  max_global_cells: 50000000
+  max_local_cells:  25000000
+  refinement:
+    surface_level: [5, 5]
+    feature_level: 5
+    wake_level:  0
+    near_level:  1
+    close_level: 0
+  box_z_min: 0.0
+  layers:
+    n_surface_layers: 3
+    expansion_ratio: 1.2
+    final_layer_thickness: 0.3
+    min_thickness: 0.1
+  quality:
+    max_non_ortho: 65
+    max_skewness: 4
+
+solver:
+  end_time: 3000
+  write_interval: 3000
+  purge_write: 1
+  first_order_iterations: 50
+  convergence:
+    p: 1.0e-4
+    U: 1.0e-5
+    k: 2.5e-5
+    epsilon: 1.5e-5
+
+display:
+  show_progress: true
+
+cleanup:
+  delete_processor_dirs: false
+  delete_intermediate_times: false
+  keep_logs: true
+  delete_case_after_vtk: false
+
+s3:
+  enabled: false

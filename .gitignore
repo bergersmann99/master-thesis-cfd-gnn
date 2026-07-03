@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ML-Artefakte (zu groß für Git — liegen im S3-Bucket)
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+runs/
+
+# Daten (CFD-Fälle, Graph-Datasets, VTK — liegen im S3-Bucket)
+*.vtk
+*.vtu
+*.foam
+data/
+datasets/
+results/
+
+# Logs & Temporäres
+*.log
+logs/*.out
+.ipynb_checkpoints/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
