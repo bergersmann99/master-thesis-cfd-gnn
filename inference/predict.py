@@ -814,17 +814,11 @@ def main():
         "--output-dir", type=str, default="./prediction",
         help="Ausgabeverzeichnis")
     parser.add_argument(
-        "--export-vtk", action="store_true", default=True,
-        help="VTU-Dateien exportieren")
-    parser.add_argument(
-        "--export-numpy", action="store_true", default=True,
-        help="NumPy-Arrays exportieren")
-    parser.add_argument(
         "--no-vtk", action="store_true",
-        help="VTU-Export deaktivieren")
+        help="VTU-Export deaktivieren (Standard: Export aktiv)")
     parser.add_argument(
         "--no-numpy", action="store_true",
-        help="NumPy-Export deaktivieren")
+        help="NumPy-Export deaktivieren (Standard: Export aktiv)")
 
     args = parser.parse_args()
 
