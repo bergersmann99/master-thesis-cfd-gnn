@@ -1,5 +1,7 @@
 # CFD-Surrogatmodellierung mit Graph Neural Networks
 
+[![DOI](https://zenodo.org/badge/1288706514.svg)](https://zenodo.org/badge/latestdoi/1288706514)
+
 Code zur Masterarbeit: GNN-basierte Surrogatmodelle (GCN / GATv2) für die Vorhersage
 von RANS-Strömungsfeldern um ein parametrisches Satteldach-Gebäude.
 
@@ -71,10 +73,13 @@ absolute Pfade dieser Umgebungen. Das Mapping Repo ↔ Zielsystem steht in
 ## Zitieren
 
 > Tim Bergermann (2026). *From CFD data sets to real-time forecasting: Neural networks
-> compared as surrogate models for flow predictions.*
+> compared as surrogate models for flow predictions.* Version 1.0.2.
+> [10.5281/zenodo.21242494](https://doi.org/10.5281/zenodo.21242494)
 
 Zitiervorlage auch maschinenlesbar in [CITATION.cff](CITATION.cff) (GitHub zeigt darüber
-automatisch einen „Cite this repository"-Button an).
+automatisch einen „Cite this repository"-Button an). Dauerhaft archiviert auf
+[Zenodo](https://doi.org/10.5281/zenodo.21242494); die DOI-Badge oben verlinkt stets die
+jeweils neueste archivierte Version.
 
 ## Lizenz
 
