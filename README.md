@@ -68,6 +68,13 @@ absolute Pfade dieser Umgebungen. Das Mapping Repo ↔ Zielsystem steht in
 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Abhängigkeiten: [requirements.txt](requirements.txt)
 (Python ≥ 3.10, OpenFOAM + MPI für die Simulation, AWS CLI für S3).
 
+## Lizenz
+
+[PolyForm Noncommercial 1.0.0](LICENSE.md) — Nutzung für **Forschung, Lehre und andere
+nicht-kommerzielle Zwecke ist frei** (Weitergabe und abgeleitete Arbeiten eingeschlossen,
+solange Lizenz und Copyright-Hinweis erhalten bleiben). **Kommerzielle Nutzung erfordert
+eine separate Lizenz** — Anfragen bitte an [@bergersmann99](https://github.com/bergersmann99).
+
 ## Herkunft & Verifikation
 
 Importiert aus `s3://amzn-master-sim-bucket/skripte_final/` (Stand 2026-07-03).
