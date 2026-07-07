@@ -68,6 +68,14 @@ absolute Pfade dieser Umgebungen. Das Mapping Repo ↔ Zielsystem steht in
 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Abhängigkeiten: [requirements.txt](requirements.txt)
 (Python ≥ 3.10, OpenFOAM + MPI für die Simulation, AWS CLI für S3).
 
+## Zitieren
+
+> Tim Bergermann (2026). *From CFD data sets to real-time forecasting: Neural networks
+> compared as surrogate models for flow predictions.*
+
+Zitiervorlage auch maschinenlesbar in [CITATION.cff](CITATION.cff) (GitHub zeigt darüber
+automatisch einen „Cite this repository"-Button an).
+
 ## Lizenz
 
 [PolyForm Noncommercial 1.0.0](LICENSE.md) — Nutzung für **Forschung, Lehre und andere

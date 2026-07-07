@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software or the accompanying thesis for research, please cite it as below."
+title: "From CFD data sets to real-time forecasting: Neural networks compared as surrogate models for flow predictions"
+type: software
+authors:
+  - family-names: Bergermann
+    given-names: Tim
+date-released: 2026
+license: LicenseRef-PolyForm-Noncommercial-1.0.0
+repository-code: "https://github.com/bergersmann99/master-thesis-cfd-gnn"
+keywords:
+  - computational fluid dynamics
+  - graph neural networks
+  - surrogate modeling
+  - OpenFOAM
+  - PyTorch Geometric
